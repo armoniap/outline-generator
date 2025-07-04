@@ -8,7 +8,8 @@ export const MODELS = {
     OUTLINE_EXTRACTION: 'openai/gpt-4o-mini', // GPT-4o Mini for outline extraction
     SEMANTIC_ANALYSIS: 'anthropic/claude-3-5-sonnet-20241022', // Claude Sonnet 3.5 for semantic analysis
     ASPECT_GENERATION: 'anthropic/claude-3-5-sonnet-20241022', // Claude Sonnet 3.5 for aspect generation
-    OUTLINE_GENERATION: 'anthropic/claude-3-5-sonnet-20241022' // Claude Sonnet 3.5 for final outline
+    OUTLINE_GENERATION: 'anthropic/claude-3-5-sonnet-20241022', // Claude Sonnet 3.5 for final outline
+    FALLBACK_MODEL: 'openai/gpt-3.5-turbo' // Fallback model for when others fail
 };
 
 // List of non-coherent subheadings to filter out
@@ -142,7 +143,7 @@ async function searchCompetitorUrlsFallback(apiKey, topic) {
     ];
 
     try {
-        const response = await makeOpenRouterRequest(apiKey, MODELS.OUTLINE_EXTRACTION, messages, 1500);
+        const response = await makeOpenRouterRequest(apiKey, MODELS.FALLBACK_MODEL, messages, 1500);
         const content = response.choices[0].message.content;
         
         // Parse JSON response
