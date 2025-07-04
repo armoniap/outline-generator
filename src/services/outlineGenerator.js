@@ -338,7 +338,16 @@ export class OutlineGenerator {
         
         lines.forEach(line => {
             const trimmed = line.trim();
-            if (trimmed.startsWith('H1:')) {
+            // Check for markdown format headers
+            if (trimmed.startsWith('# ')) {
+                h1Count++;
+            } else if (trimmed.startsWith('## ')) {
+                h2Count++;
+            } else if (trimmed.startsWith('### ')) {
+                h3Count++;
+            }
+            // Also check for old H1:, H2:, H3: format for backward compatibility
+            else if (trimmed.startsWith('H1:')) {
                 h1Count++;
             } else if (trimmed.startsWith('H2:')) {
                 h2Count++;
@@ -362,6 +371,12 @@ export class OutlineGenerator {
     }
 
     convertToMarkdown(outlineText) {
+        // If the text is already in markdown format, return as-is
+        if (outlineText.includes('# ') || outlineText.includes('## ') || outlineText.includes('### ')) {
+            return outlineText;
+        }
+        
+        // Otherwise, convert from H1:, H2:, H3: format to markdown
         return outlineText
             .split('\n')
             .map(line => {
