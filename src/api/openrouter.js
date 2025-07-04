@@ -4,7 +4,7 @@ const INITIAL_RETRY_DELAY = 1000;
 
 // Available models for different tasks
 export const MODELS = {
-    SERP_SEARCH: 'perplexity/llama-3.1-sonar-small-128k-online', // Perplexity for SERP search (using smaller model)
+    SERP_SEARCH: 'perplexity/sonar', // Perplexity Sonar for SERP search
     OUTLINE_EXTRACTION: 'openai/gpt-4o-mini', // GPT-4o Mini for outline extraction
     SEMANTIC_ANALYSIS: 'anthropic/claude-3-5-sonnet-20241022', // Claude Sonnet 3.5 for semantic analysis
     ASPECT_GENERATION: 'anthropic/claude-3-5-sonnet-20241022', // Claude Sonnet 3.5 for aspect generation
