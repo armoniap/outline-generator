@@ -600,13 +600,19 @@ ESEMPI DI MIGLIORAMENTO:
 FORMATO:
 Mantieni il livello ${heading.level} ma rendi il titolo descrittivo e specifico.
 
-Rispondi SOLO con il nuovo subheading migliorato, senza spiegazioni aggiuntive.`
+IMPORTANTE: Rispondi SOLO con il testo del titolo, senza prefissi markdown (##, ###) o etichette (H1:, H2:). Solo il testo pulito del subheading.`
         }
     ];
 
     try {
         const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 150);
-        return response.choices[0].message.content.trim();
+        let suggestion = response.choices[0].message.content.trim();
+        
+        // Remove markdown prefixes that the AI might add
+        suggestion = suggestion.replace(/^#{1,6}\s*/, ''); // Remove # ## ### etc.
+        suggestion = suggestion.replace(/^H[1-6]:\s*/, ''); // Remove H1: H2: etc.
+        
+        return suggestion;
     } catch (error) {
         console.error('Error generating subheading suggestion:', error);
         throw error;
