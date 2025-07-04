@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 disabled:cursor-not-allowed;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+  }
+  
+  .score-excellent {
+    color: #10b981 !important;
+    font-weight: bold;
+  }
+  
+  .score-good {
+    color: #3b82f6 !important;
+    font-weight: bold;
+  }
+  
+  .score-fair {
+    color: #f59e0b !important;
+    font-weight: bold;
+  }
+  
+  .score-poor {
+    color: #ef4444 !important;
+    font-weight: bold;
+  }
+  
+  .outline-item {
+    @apply flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700;
+  }
+  
+  .outline-item:hover {
+    @apply bg-gray-100 dark:bg-gray-600;
+  }
+  
+  .outline-item.editing {
+    @apply bg-blue-50 dark:bg-blue-900 border-blue-300 dark:border-blue-600;
+  }
+  
+  .semantic-term {
+    @apply inline-block px-2 py-1 rounded-full text-sm cursor-pointer transition-colors font-medium;
+  }
+  
+  .semantic-term.unused {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600;
+  }
+  
+  .semantic-term.used {
+    @apply bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 border-2 border-green-300 dark:border-green-600;
+  }
+  
+  .semantic-term.excluded {
+    @apply bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 line-through opacity-50 hover:bg-red-200 dark:hover:bg-red-800;
+  }
+  
+  .semantic-term.selected {
+    @apply bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 border-2 border-blue-300 dark:border-blue-600;
+  }
+  
+  .score-change-indicator {
+    @apply inline-block ml-2 px-2 py-1 rounded-full text-xs font-medium transition-opacity duration-300;
+  }
+  
+  .score-change-positive {
+    @apply bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200;
+  }
+  
+  .score-change-negative {
+    @apply bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200;
+  }
+  
+  .terms-legend {
+    @apply bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 mb-4;
+  }
+  
+  .legend-item {
+    @apply flex items-center space-x-2 mb-2;
+  }
+  
+  .legend-color {
+    @apply w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-pulse-subtle {
+    animation: pulseSubtle 2s infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}

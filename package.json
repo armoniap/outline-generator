@@ -1,0 +1,24 @@
+{
+  "name": "outline-generator",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "gh-pages": "^6.1.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^6.0.0"
+  },
+  "keywords": ["outline", "generator", "semantic", "analysis", "seo", "ai", "competitor"],
+  "author": "",
+  "license": "ISC",
+  "description": "AI-powered outline generator that creates comprehensive outlines by analyzing competitors and performing semantic analysis"
+}
