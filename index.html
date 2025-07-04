@@ -11,8 +11,8 @@
         body { visibility: hidden; }
         body.loaded { visibility: visible; }
     </style>
-  <script type="module" crossorigin src="/outline-generator/assets/index-OVw7EGUk.js"></script>
-  <link rel="stylesheet" crossorigin href="/outline-generator/assets/index-Dc8aSUE5.css">
+  <script type="module" crossorigin src="/outline-generator/assets/index-1ECs1YDj.js"></script>
+  <link rel="stylesheet" crossorigin href="/outline-generator/assets/index-CtCdoFQh.css">
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <div id="app" class="min-h-full">
@@ -55,6 +55,22 @@
                                            placeholder="Inserisci la tua API key di OpenRouter">
                                     <button type="button" id="toggleOpenrouterApiKey" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <svg id="openrouterEyeIcon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="geminiApiKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Google Gemini API Key <span class="text-xs text-gray-500">(per Fase 3)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="password" id="geminiApiKey" 
+                                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                           placeholder="Inserisci la tua API key di Google Gemini">
+                                    <button type="button" id="toggleGeminiApiKey" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                        <svg id="geminiEyeIcon" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
@@ -245,6 +261,62 @@
                             <div class="text-2xl font-bold text-orange-800 dark:text-orange-200" id="totalSections">0</div>
                             <div class="text-sm text-orange-600 dark:text-orange-400">Sezioni Totali</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 3: Semantic Coherence Analysis -->
+            <div id="phase3Section" class="mt-8 space-y-6 hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🧠 Fase 3: Analisi Coerenza Semantica</h2>
+                    
+                    <!-- Start Analysis Button -->
+                    <div class="text-center mb-6">
+                        <button id="startSemanticAnalysisBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-md transition-colors text-lg">
+                            🚀 Avvia Analisi Semantica
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Semantic Analysis Results -->
+                <div id="semanticAnalysisResults" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">📊 Risultati Analisi</h3>
+                        <div id="overallScore" class="px-3 py-1 rounded-full text-sm font-medium">
+                            <!-- Overall score will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Score Distribution -->
+                    <div id="scoreDistribution" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-green-100 dark:bg-green-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-800 dark:text-green-200" id="excellentCount">0</div>
+                            <div class="text-sm text-green-600 dark:text-green-400">Eccellenti</div>
+                        </div>
+                        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-800 dark:text-blue-200" id="goodCount">0</div>
+                            <div class="text-sm text-blue-600 dark:text-blue-400">Buoni</div>
+                        </div>
+                        <div class="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-yellow-800 dark:text-yellow-200" id="fairCount">0</div>
+                            <div class="text-sm text-yellow-600 dark:text-yellow-400">Discreti</div>
+                        </div>
+                        <div class="bg-red-100 dark:bg-red-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-red-800 dark:text-red-200" id="poorCount">0</div>
+                            <div class="text-sm text-red-600 dark:text-red-400">Scarsi</div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Outline Editor -->
+                    <div id="interactiveOutlineEditor" class="space-y-3">
+                        <!-- Heading items will be populated here -->
+                    </div>
+
+                    <!-- Copy Final Outline Button -->
+                    <div class="mt-6 text-center">
+                        <button id="copyFinalOutlineBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-md transition-colors">
+                            📋 Copia Outline Finale Markdown
+                        </button>
                     </div>
                 </div>
             </div>
