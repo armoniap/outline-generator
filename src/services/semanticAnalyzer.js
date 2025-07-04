@@ -1,5 +1,5 @@
 import { generateEmbeddings } from '../api/gemini.js';
-import { makeOpenRouterRequest, MODELS } from '../api/openrouter.js';
+import { makeOpenRouterRequest, MODELS, generateSubheadingSuggestion } from '../api/openrouter.js';
 import { cosineSimilarity, getScoreLevel, calculateAverageScore } from '../utils/math.js';
 
 export class SemanticAnalyzer {
@@ -224,46 +224,17 @@ export class SemanticAnalyzer {
 
         const currentOutline = this.getCurrentOutlineText();
         
-        const messages = [
-            {
-                role: 'system',
-                content: `Sei un esperto SEO e content strategist specializzato nella creazione di titoli semanticamente ottimizzati. Il tuo compito è migliorare la coerenza semantica dei subheading rispetto all'argomento principale.`
-            },
-            {
-                role: 'user',
-                content: `Migliora questo subheading per massimizzare la coerenza semantica con l'argomento principale "${this.currentTopic}":
-
-SUBHEADING DA MIGLIORARE:
-Livello: ${heading.level}
-Titolo attuale: "${heading.text}"
-Punteggio attuale: ${Math.round(heading.score * 100)}%
-
-CONTESTO OUTLINE COMPLETA:
-${currentOutline}
-
-TERMINI SEMANTICI DISPONIBILI:
-${this.semanticTerms.slice(0, 20).join(', ')}
-
-REQUISITI:
-1. Mantieni il significato originale del subheading
-2. Integra termini semanticamente rilevanti quando possibile
-3. Usa linguaggio naturale e coinvolgente
-4. Assicurati che il nuovo titolo sia più coerente con "${this.currentTopic}"
-5. Mantieni il livello di profondità appropriato (${heading.level})
-
-Rispondi SOLO con il nuovo subheading migliorato, senza spiegazioni aggiuntive.`
-            }
-        ];
-
         try {
-            const response = await makeOpenRouterRequest(
-                this.openrouterApiKey, 
-                MODELS.SEMANTIC_ANALYSIS, 
-                messages, 
-                100
+            // Use the improved API function
+            const suggestion = await generateSubheadingSuggestion(
+                this.openrouterApiKey,
+                this.currentTopic,
+                heading,
+                currentOutline,
+                this.semanticTerms
             );
             
-            return response.choices[0].message.content.trim();
+            return suggestion;
         } catch (error) {
             console.error('Error generating AI suggestion:', error);
             throw error;

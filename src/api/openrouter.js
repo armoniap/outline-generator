@@ -566,36 +566,46 @@ export async function generateSubheadingSuggestion(apiKey, topic, heading, curre
     const messages = [
         {
             role: 'system',
-            content: `Sei un esperto SEO e content strategist specializzato nella creazione di titoli semanticamente ottimizzati. Il tuo compito è migliorare la coerenza semantica dei subheading rispetto all'argomento principale.`
+            content: `Sei un esperto SEO e content strategist specializzato nella creazione di titoli semanticamente ottimizzati e descrittivi. Il tuo compito è creare subheading che non solo siano semanticamente coerenti, ma che spieghino chiaramente al lettore cosa aspettarsi nel paragrafo.`
         },
         {
             role: 'user',
-            content: `Migliora questo subheading per massimizzare la coerenza semantica con l'argomento principale "${topic}":
+            content: `Migliora questo subheading per l'argomento "${topic}" creando un titolo che:
+1. Massimizzi la coerenza semantica
+2. Spieghi chiaramente cosa verrà trattato nel paragrafo
+3. Sia coinvolgente e informativo per il lettore
 
 SUBHEADING DA MIGLIORARE:
 Livello: ${heading.level}
 Titolo attuale: "${heading.text}"
-Punteggio attuale: ${Math.round((heading.score || 0) * 100)}%
+Punteggio semantico attuale: ${Math.round((heading.score || 0) * 100)}%
 
 CONTESTO OUTLINE COMPLETA:
 ${currentOutline}
 
 TERMINI SEMANTICI DISPONIBILI:
-${semanticTerms.slice(0, 20).join(', ')}
+${semanticTerms.slice(0, 25).join(', ')}
 
-REQUISITI:
-1. Mantieni il significato originale del subheading
-2. Integra termini semanticamente rilevanti quando possibile
-3. Usa linguaggio naturale e coinvolgente
-4. Assicurati che il nuovo titolo sia più coerente con "${topic}"
-5. Mantieni il livello di profondità appropriato (${heading.level})
+OBIETTIVI DEL NUOVO SUBHEADING:
+1. COERENZA SEMANTICA: Integra termini rilevanti per migliorare la correlazione con "${topic}"
+2. CHIAREZZA ESPOSITIVA: Il titolo deve far capire al lettore esattamente cosa imparerà
+3. SPECIFICITÀ: Evita titoli generici, sii specifico su benefici, processi, o informazioni concrete
+4. VALORE AGGIUNTO: Il lettore deve percepire il valore di leggere questa sezione
+
+ESEMPI DI MIGLIORAMENTO:
+- Da "Strumenti" a "I 10 Strumenti Essenziali per Automatizzare il Tuo Marketing Digitale"
+- Da "Benefici" a "Come il Life Coaching Trasforma la Carriera: 5 Benefici Misurabili"
+- Da "Implementazione" a "Guida Step-by-Step: Come Implementare una Strategia SEO in 30 Giorni"
+
+FORMATO:
+Mantieni il livello ${heading.level} ma rendi il titolo descrittivo e specifico.
 
 Rispondi SOLO con il nuovo subheading migliorato, senza spiegazioni aggiuntive.`
         }
     ];
 
     try {
-        const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 100);
+        const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 150);
         return response.choices[0].message.content.trim();
     } catch (error) {
         console.error('Error generating subheading suggestion:', error);

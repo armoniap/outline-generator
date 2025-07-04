@@ -159,6 +159,9 @@ function createEditableHeadingElement(heading, index) {
                 <button class="edit-btn bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded transition-colors" data-heading-id="${heading.id}">
                     ✏️ Modifica
                 </button>
+                <button class="delete-btn bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition-colors" data-heading-id="${heading.id}">
+                    🗑️ Elimina
+                </button>
             </div>
         </div>
         <div class="heading-content">
@@ -191,6 +194,7 @@ function createEditableHeadingElement(heading, index) {
 function setupHeadingEventListeners(element, heading) {
     const aiSuggestBtn = element.querySelector('.ai-suggest-btn');
     const editBtn = element.querySelector('.edit-btn');
+    const deleteBtn = element.querySelector('.delete-btn');
     const cancelBtn = element.querySelector('.cancel-edit-btn');
     const confirmBtn = element.querySelector('.confirm-edit-btn');
     const input = element.querySelector('input');
@@ -201,6 +205,10 @@ function setupHeadingEventListeners(element, heading) {
     
     if (editBtn) {
         editBtn.addEventListener('click', () => enterEditMode(element));
+    }
+    
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => handleDeleteHeading(heading.id, element));
     }
     
     if (cancelBtn) {
@@ -352,18 +360,24 @@ function showSuggestionModal(headingId, suggestion) {
     overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     
     overlay.innerHTML = `
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4 w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-lg mx-4 w-full">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                🤖 Suggerimento AI
+                🤖 Suggerimento AI Ottimizzato
             </h3>
-            <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4">
-                <p class="text-blue-800 dark:text-blue-200">${suggestion}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Questo suggerimento è stato ottimizzato per massimizzare la coerenza semantica e spiegare chiaramente cosa verrà trattato nel paragrafo:
+            </p>
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 p-4 rounded-lg mb-4 border-l-4 border-blue-500">
+                <p class="text-blue-800 dark:text-blue-200 font-medium">${suggestion}</p>
+            </div>
+            <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                💡 Il suggerimento integra termini semantici rilevanti e rende il titolo più descrittivo e coinvolgente
             </div>
             <div class="flex justify-end space-x-3">
                 <button class="cancel-suggestion bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors">
                     Annulla
                 </button>
-                <button class="apply-suggestion bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors">
+                <button class="apply-suggestion bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded transition-colors">
                     Applica Suggerimento
                 </button>
             </div>
@@ -412,6 +426,90 @@ function updateOverallStatistics() {
     const statistics = semanticAnalyzer.getUpdatedStatistics();
     updateOverallScore(statistics);
     updateScoreDistribution(statistics.scoreDistribution);
+}
+
+function handleDeleteHeading(headingId, element) {
+    // Show confirmation modal
+    showDeleteConfirmationModal(headingId, element);
+}
+
+function showDeleteConfirmationModal(headingId, element) {
+    const heading = semanticAnalyzer.headings.find(h => h.id === headingId);
+    if (!heading) return;
+    
+    // Create modal overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    
+    overlay.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4 w-full">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                🗑️ Conferma Eliminazione
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                Sei sicuro di voler eliminare questo subheading?
+            </p>
+            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg mb-4">
+                <p class="text-sm font-medium text-gray-900 dark:text-white">${heading.level}: ${heading.text}</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button class="cancel-delete bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors">
+                    Annulla
+                </button>
+                <button class="confirm-delete bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors">
+                    Elimina
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add event listeners
+    const cancelBtn = overlay.querySelector('.cancel-delete');
+    const confirmBtn = overlay.querySelector('.confirm-delete');
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+    }
+    
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+            confirmDeleteHeading(headingId, element);
+        });
+    }
+    
+    // Close on backdrop click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            document.body.removeChild(overlay);
+        }
+    });
+    
+    document.body.appendChild(overlay);
+}
+
+function confirmDeleteHeading(headingId, element) {
+    try {
+        // Remove from semanticAnalyzer
+        const index = semanticAnalyzer.headings.findIndex(h => h.id === headingId);
+        if (index >= 0) {
+            semanticAnalyzer.headings.splice(index, 1);
+        }
+        
+        // Remove from DOM
+        element.remove();
+        
+        // Update statistics
+        updateOverallStatistics();
+        
+        showSuccess('Subheading eliminato con successo!');
+        
+    } catch (error) {
+        showError(`Errore durante l'eliminazione: ${error.message}`);
+        console.error('Delete error:', error);
+    }
 }
 
 function copyFinalOutline() {
