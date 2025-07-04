@@ -1,4 +1,4 @@
-import { fadeIn } from '../utils/ui.js';
+import { fadeIn, showLoading, hideLoading, showError, showSuccess } from '../utils/ui.js';
 import { outlineGenerator } from '../services/outlineGenerator.js';
 
 export function renderResults(results) {
@@ -324,10 +324,147 @@ export function setupSelectionControls() {
     
     if (proceedBtn) {
         proceedBtn.addEventListener('click', () => {
-            const selectedData = outlineGenerator.getSelectedData();
-            console.log('Selected data for phase 2:', selectedData);
-            // TODO: Implement phase 2 logic
-            alert('Fase 2 non ancora implementata. I dati selezionati sono stati salvati nella console.');
+            showPhase2();
         });
     }
+}
+
+function showPhase2() {
+    const selectedData = outlineGenerator.getSelectedData();
+    
+    // Show Phase 2 section
+    const phase2Section = document.getElementById('phase2Section');
+    if (phase2Section) {
+        phase2Section.classList.remove('hidden');
+        fadeIn(phase2Section);
+        
+        // Scroll to Phase 2
+        phase2Section.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Update selected summary
+    updateSelectedSummary(selectedData);
+    
+    // Setup Phase 2 event listeners
+    setupPhase2EventListeners();
+}
+
+function updateSelectedSummary(selectedData) {
+    const selectedSummary = document.getElementById('selectedSummary');
+    if (!selectedSummary) return;
+    
+    selectedSummary.innerHTML = `
+        <div>• <strong>Competitor:</strong> ${selectedData.counts.competitors} selezionati</div>
+        <div>• <strong>Elementi Semantici:</strong> ${selectedData.counts.semanticElements} selezionati</div>
+        <div>• <strong>Aspetti da Trattare:</strong> ${selectedData.counts.aspects} selezionati</div>
+    `;
+}
+
+function setupPhase2EventListeners() {
+    const generateOutlineBtn = document.getElementById('generateOutlineBtn');
+    const copyMarkdownBtn = document.getElementById('copyMarkdownBtn');
+    
+    if (generateOutlineBtn) {
+        generateOutlineBtn.addEventListener('click', async () => {
+            await handleGenerateOutline();
+        });
+    }
+    
+    if (copyMarkdownBtn) {
+        copyMarkdownBtn.addEventListener('click', () => {
+            copyOutlineToClipboard();
+        });
+    }
+}
+
+async function handleGenerateOutline() {
+    try {
+        const openrouterApiKey = document.getElementById('openrouterApiKey').value.trim();
+        const topic = document.getElementById('topicInput').value.trim();
+        const includeH3 = document.getElementById('includeH3').checked;
+        
+        if (!openrouterApiKey || !topic) {
+            showError('API key e topic sono richiesti per generare l\'outline.');
+            return;
+        }
+        
+        showLoading('Generando outline finale...');
+        
+        const result = await outlineGenerator.generateFinalOutline(openrouterApiKey, topic, includeH3);
+        
+        // Display the generated outline
+        displayGeneratedOutline(result.outline, result.analytics);
+        
+        hideLoading();
+        showSuccess('Outline finale generata con successo!');
+        
+    } catch (error) {
+        hideLoading();
+        showError(`Errore durante la generazione: ${error.message}`);
+        console.error('Outline generation error:', error);
+    }
+}
+
+function displayGeneratedOutline(outline, analytics) {
+    const generatedOutlineSection = document.getElementById('generatedOutlineSection');
+    const generatedOutlineContent = document.getElementById('generatedOutlineContent');
+    
+    if (generatedOutlineSection && generatedOutlineContent) {
+        generatedOutlineContent.textContent = outline;
+        generatedOutlineSection.classList.remove('hidden');
+        fadeIn(generatedOutlineSection);
+        
+        // Update analytics
+        updateOutlineAnalytics(analytics);
+        
+        // Scroll to generated outline
+        generatedOutlineSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function updateOutlineAnalytics(analytics) {
+    const elements = {
+        h2Count: document.getElementById('h2Count'),
+        h3Count: document.getElementById('h3Count'),
+        questionsCount: document.getElementById('questionsCount'),
+        totalSections: document.getElementById('totalSections')
+    };
+    
+    if (elements.h2Count) elements.h2Count.textContent = analytics.h2Count;
+    if (elements.h3Count) elements.h3Count.textContent = analytics.h3Count;
+    if (elements.questionsCount) elements.questionsCount.textContent = analytics.questionsCount;
+    if (elements.totalSections) elements.totalSections.textContent = analytics.totalSections;
+}
+
+function copyOutlineToClipboard() {
+    const generatedOutlineContent = document.getElementById('generatedOutlineContent');
+    if (!generatedOutlineContent || !generatedOutlineContent.textContent) {
+        showError('Nessuna outline da copiare.');
+        return;
+    }
+    
+    const outlineText = generatedOutlineContent.textContent;
+    const markdownText = outlineGenerator.convertToMarkdown(outlineText);
+    
+    navigator.clipboard.writeText(markdownText).then(() => {
+        showSuccess('Outline copiata in formato Markdown!');
+        
+        // Visual feedback on button
+        const copyBtn = document.getElementById('copyMarkdownBtn');
+        if (copyBtn) {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copiato!';
+            copyBtn.classList.add('bg-green-600');
+            copyBtn.classList.remove('bg-blue-600');
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.classList.remove('bg-green-600');
+                copyBtn.classList.add('bg-blue-600');
+            }, 2000);
+        }
+    }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+        showError('Errore durante la copia negli appunti.');
+    });
 }

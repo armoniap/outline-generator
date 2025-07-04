@@ -497,6 +497,62 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export async function generateFinalOutline(apiKey, topic, selectedData, includeH3 = true) {
+    const messages = [
+        {
+            role: 'system',
+            content: `Sei un esperto content strategist e SEO specialist. Il tuo compito è creare un'outline completa e semanticamente ottimizzata per un contenuto che deve coprire al 100% tutti gli aspetti di un argomento.`
+        },
+        {
+            role: 'user',
+            content: `Crea un'outline completa per l'argomento "${topic}" utilizzando i seguenti dati:
+
+OUTLINE COMPETITOR ANALIZZATE:
+${selectedData.competitors.map((comp, index) => `
+${comp.title}:
+${comp.outline}
+`).join('\n')}
+
+ASPETTI DA TRATTARE SELEZIONATI:
+${Object.entries(selectedData.aspects || {}).map(([category, aspects]) => `
+${category}:
+${aspects.map(aspect => `- ${aspect.aspect}: ${aspect.description}`).join('\n')}
+`).join('\n')}
+
+ELEMENTI SEMANTICI SELEZIONATI:
+${JSON.stringify(selectedData.semanticAnalysis, null, 2)}
+
+REQUISITI DELL'OUTLINE:
+1. ${includeH3 ? 'Usa struttura H1, H2, H3 per massima profondità' : 'Usa solo H1 e H2 per struttura più semplice'}
+2. Subheading in italiano perfetto, interessanti e coinvolgenti
+3. Ogni subheading deve avere un argomento UNICO senza ripetizioni
+4. Incorpora entità semantiche rilevanti nei titoli quando possibile
+5. Usa domande come subheading quando è naturale e coinvolgente
+6. Copri TUTTI gli aspetti importanti dell'argomento
+7. Struttura logica e progressiva
+8. Subheading che esprimono chiaramente cosa sarà trattato
+
+FORMATO RICHIESTO:
+H1: Titolo Principale
+H2: Primo Argomento Principale
+${includeH3 ? 'H3: Primo Sottoargomento\nH3: Secondo Sottoargomento' : ''}
+H2: Secondo Argomento Principale
+${includeH3 ? 'H3: Primo Sottoargomento\nH3: Secondo Sottoargomento' : ''}
+
+Crea un'outline esaustiva che non lasci nessun aspetto importante non trattato.`
+        }
+    ];
+
+    try {
+        const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 3000);
+        const content = response.choices[0].message.content.trim();
+        return content;
+    } catch (error) {
+        console.error('Error generating final outline:', error);
+        throw error;
+    }
+}
+
 export async function testOpenRouterApiKey(apiKey) {
     try {
         const testMessages = [

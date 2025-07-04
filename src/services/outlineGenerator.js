@@ -2,7 +2,8 @@ import {
     searchCompetitorUrls, 
     extractOutlineFromContent,
     generateSemanticAnalysis,
-    generateAspectsToTreat
+    generateAspectsToTreat,
+    generateFinalOutline
 } from '../api/openrouter.js';
 
 export class OutlineGenerator {
@@ -305,6 +306,76 @@ export class OutlineGenerator {
         });
 
         return count;
+    }
+
+    async generateFinalOutline(apiKey, topic, includeH3 = true) {
+        try {
+            this.updateStatus('Generando outline finale...');
+            
+            const selectedData = this.getSelectedData();
+            const finalOutline = await generateFinalOutline(apiKey, topic, selectedData, includeH3);
+            
+            this.updateStatus('Outline finale generata con successo!');
+            
+            return {
+                outline: finalOutline,
+                analytics: this.analyzeOutline(finalOutline)
+            };
+            
+        } catch (error) {
+            this.updateStatus(`Errore durante la generazione: ${error.message}`);
+            throw error;
+        }
+    }
+
+    analyzeOutline(outlineText) {
+        const lines = outlineText.split('\n').filter(line => line.trim());
+        
+        let h1Count = 0;
+        let h2Count = 0;
+        let h3Count = 0;
+        let questionsCount = 0;
+        
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('H1:')) {
+                h1Count++;
+            } else if (trimmed.startsWith('H2:')) {
+                h2Count++;
+            } else if (trimmed.startsWith('H3:')) {
+                h3Count++;
+            }
+            
+            // Count questions (lines ending with ?)
+            if (trimmed.includes('?')) {
+                questionsCount++;
+            }
+        });
+        
+        return {
+            h1Count,
+            h2Count,
+            h3Count,
+            questionsCount,
+            totalSections: h1Count + h2Count + h3Count
+        };
+    }
+
+    convertToMarkdown(outlineText) {
+        return outlineText
+            .split('\n')
+            .map(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('H1:')) {
+                    return `# ${trimmed.substring(3).trim()}`;
+                } else if (trimmed.startsWith('H2:')) {
+                    return `## ${trimmed.substring(3).trim()}`;
+                } else if (trimmed.startsWith('H3:')) {
+                    return `### ${trimmed.substring(3).trim()}`;
+                }
+                return line;
+            })
+            .join('\n');
     }
 }
 
