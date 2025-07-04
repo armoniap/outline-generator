@@ -60,7 +60,8 @@ function setupFormValidation() {
                     const type = inputId.replace('ApiKey', '');
                     saveApiKey(type, input.value);
                 }
-                validateGenerationForm();
+                // Call validation on next tick to ensure DOM is ready
+                setTimeout(() => validateGenerationForm(), 0);
             });
         }
     });

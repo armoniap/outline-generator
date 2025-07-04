@@ -1,0 +1,15 @@
+# Comandi da eseguire dopo aver creato il repository su GitHub
+
+# 1. Push del codice iniziale
+git push -u origin main
+
+# 2. Deploy su GitHub Pages
+npm run deploy
+
+# 3. Verifica che tutto funzioni
+# Il sito sarà disponibile su: https://armoniap.github.io/outline-generator
+
+# Note:
+# - Il primo deploy potrebbe richiedere alcuni minuti
+# - GitHub Pages si attiverà automaticamente quando verrà creato il branch gh-pages
+# - Se necessario, vai su Settings > Pages e seleziona il branch gh-pages come source
