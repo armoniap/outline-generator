@@ -11,8 +11,8 @@
         body { visibility: hidden; }
         body.loaded { visibility: visible; }
     </style>
-  <script type="module" crossorigin src="/outline-generator/assets/index-Dg04SFHK.js"></script>
-  <link rel="stylesheet" crossorigin href="/outline-generator/assets/index-BS9bHAv1.css">
+  <script type="module" crossorigin src="/outline-generator/assets/index-D20yI0VG.js"></script>
+  <link rel="stylesheet" crossorigin href="/outline-generator/assets/index-Dc8aSUE5.css">
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <div id="app" class="min-h-full">
@@ -180,6 +180,71 @@
                         <button id="proceedBtn" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed">
                             Procedi alla Fase 2
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2: Outline Generation -->
+            <div id="phase2Section" class="mt-8 space-y-6 hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🚀 Fase 2: Generazione Outline</h2>
+                    
+                    <!-- Configuration Options -->
+                    <div class="mb-6 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="includeH3" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" checked>
+                            <label for="includeH3" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Includi sottotitoli H3 (struttura più dettagliata)
+                            </label>
+                        </div>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+                            <h3 class="font-medium text-blue-900 dark:text-blue-100 mb-2">Elementi Selezionati:</h3>
+                            <div id="selectedSummary" class="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <div class="flex justify-center">
+                        <button id="generateOutlineBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-md transition-colors text-lg">
+                            🎯 Genera Outline Finale
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generated Outline Display -->
+                <div id="generatedOutlineSection" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📝 Outline Generata</h2>
+                        <button id="copyMarkdownBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                            📋 Copia Markdown
+                        </button>
+                    </div>
+                    
+                    <div id="generatedOutlineContent" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg font-mono text-sm whitespace-pre-line overflow-x-auto">
+                        <!-- Generated outline will appear here -->
+                    </div>
+                    
+                    <!-- Outline Analytics -->
+                    <div id="outlineAnalytics" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-green-100 dark:bg-green-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-800 dark:text-green-200" id="h2Count">0</div>
+                            <div class="text-sm text-green-600 dark:text-green-400">Titoli H2</div>
+                        </div>
+                        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-800 dark:text-blue-200" id="h3Count">0</div>
+                            <div class="text-sm text-blue-600 dark:text-blue-400">Sottotitoli H3</div>
+                        </div>
+                        <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-purple-800 dark:text-purple-200" id="questionsCount">0</div>
+                            <div class="text-sm text-purple-600 dark:text-purple-400">Domande</div>
+                        </div>
+                        <div class="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-orange-800 dark:text-orange-200" id="totalSections">0</div>
+                            <div class="text-sm text-orange-600 dark:text-orange-400">Sezioni Totali</div>
+                        </div>
                     </div>
                 </div>
             </div>
