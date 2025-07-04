@@ -539,14 +539,23 @@ ${includeH3 ? 'H3: Primo Sottoargomento\nH3: Secondo Sottoargomento' : ''}
 H2: Secondo Argomento Principale
 ${includeH3 ? 'H3: Primo Sottoargomento\nH3: Secondo Sottoargomento' : ''}
 
-Crea un'outline esaustiva che non lasci nessun aspetto importante non trattato.`
+IMPORTANTE: Rispondi SOLO con l'outline in formato markdown pulito, senza commenti, note o spiegazioni aggiuntive. Solo i titoli H1, H2, H3 con i relativi contenuti.`
         }
     ];
 
     try {
         const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 3000);
         const content = response.choices[0].message.content.trim();
-        return content;
+        
+        // Clean up the response to remove any extra comments or notes
+        const lines = content.split('\n');
+        const cleanLines = lines.filter(line => {
+            const trimmed = line.trim();
+            // Keep only lines that start with # (markdown headers) or are empty
+            return trimmed.startsWith('#') || trimmed === '';
+        });
+        
+        return cleanLines.join('\n').trim();
     } catch (error) {
         console.error('Error generating final outline:', error);
         throw error;
