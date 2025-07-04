@@ -56,36 +56,40 @@ export async function makeOpenRouterRequest(apiKey, model, messages, maxTokens =
 }
 
 export async function searchCompetitorUrls(apiKey, topic) {
-    // First try with Perplexity/Sonar
+    // First try with Perplexity/Sonar - search on Google.it for Italian results
     const messages = [
         {
             role: 'user',
-            content: `Search online for the top 10 results about "${topic}". 
+            content: `Cerca su Google.it i primi 10 risultati per l'argomento "${topic}". 
             
-            Focus on:
-            - Blog articles
-            - Complete guides
-            - Informative pages
-            - Educational resources
+            IMPORTANTE: Cerca specificamente su Google Italia (google.it) per ottenere risultati in lingua italiana.
             
-            Avoid:
-            - Pure commercial/sales pages
-            - Social media posts
-            - Brief news items
-            - Pages without substantial content
+            Concentrati su:
+            - Articoli di blog italiani
+            - Guide complete in italiano
+            - Pagine informative italiane
+            - Risorse educative italiane
+            - Siti web .it quando possibile
             
-            For each result provide:
-            - URL
-            - Title
-            - Brief content description
+            Evita:
+            - Pagine puramente commerciali/vendita
+            - Post social media
+            - Notizie brevi
+            - Pagine senza contenuto sostanziale
+            - Risultati in inglese se esistono alternative italiane
             
-            Respond in JSON format:
+            Per ogni risultato fornisci:
+            - URL del sito italiano
+            - Titolo in italiano
+            - Breve descrizione del contenuto
+            
+            Rispondi in formato JSON:
             {
                 "results": [
                     {
-                        "url": "https://example.com",
-                        "title": "Page title",
-                        "description": "Brief description"
+                        "url": "https://example.it",
+                        "title": "Titolo della pagina italiana",
+                        "description": "Breve descrizione in italiano"
                     }
                 ]
             }`
@@ -116,26 +120,26 @@ async function searchCompetitorUrlsFallback(apiKey, topic) {
     const messages = [
         {
             role: 'system',
-            content: 'You are a helpful assistant that generates realistic example URLs and content for competitor analysis based on a given topic.'
+            content: 'Sei un assistente che genera URL e contenuti realistici per analisi competitor di siti web italiani.'
         },
         {
             role: 'user',
-            content: `Generate 10 realistic competitor URLs and content descriptions for the topic "${topic}". These should be typical pages that would rank well for this topic.
+            content: `Genera 10 URL realistici di competitor italiani e descrizioni dei contenuti per l'argomento "${topic}". Questi dovrebbero essere tipici siti che si posizionerebbero bene su Google.it per questo topic.
             
-            Create realistic:
-            - Domain names (like example1.com, blog.example2.com, etc.)
-            - Page titles
-            - Brief descriptions of what each page would contain
+            Crea realistici:
+            - Nomi di dominio italiani (come esempio1.it, blog.esempio2.com, marketing.example.it, etc.)
+            - Titoli delle pagine in italiano
+            - Brevi descrizioni di cosa conterrebbe ogni pagina
             
-            Focus on educational and informative content types.
+            Concentrati su tipi di contenuto educativi e informativi tipici del web italiano.
             
-            Respond in JSON format:
+            Rispondi in formato JSON:
             {
                 "results": [
                     {
-                        "url": "https://example.com/page",
-                        "title": "Realistic page title",
-                        "description": "What this page would contain"
+                        "url": "https://esempio.it/pagina",
+                        "title": "Titolo realistico della pagina",
+                        "description": "Cosa conterrebbe questa pagina"
                     }
                 ]
             }`
@@ -164,29 +168,39 @@ async function searchCompetitorUrlsFallback(apiKey, topic) {
 function generateDefaultCompetitorResults(topic) {
     return [
         {
-            url: "https://example1.com/guide",
-            title: `Complete Guide to ${topic}`,
-            description: `Comprehensive guide covering all aspects of ${topic}`
+            url: "https://marketing.esempio1.it/guida",
+            title: `Guida Completa al ${topic}`,
+            description: `Guida completa che copre tutti gli aspetti del ${topic}`
         },
         {
-            url: "https://blog.example2.com/article",
-            title: `${topic}: Everything You Need to Know`,
-            description: `Detailed article explaining ${topic} fundamentals`
+            url: "https://blog.digitalitalia.com/articolo",
+            title: `${topic}: Tutto quello che devi sapere`,
+            description: `Articolo dettagliato che spiega i fondamenti del ${topic}`
         },
         {
-            url: "https://example3.com/tutorial",
-            title: `How to Master ${topic}`,
-            description: `Step-by-step tutorial for ${topic}`
+            url: "https://webmarketing.it/tutorial",
+            title: `Come Padroneggiare il ${topic}`,
+            description: `Tutorial passo-passo per il ${topic}`
         },
         {
-            url: "https://example4.com/tips",
-            title: `Top 10 ${topic} Tips`,
-            description: `Expert tips and best practices for ${topic}`
+            url: "https://consulenza.esempio4.it/consigli",
+            title: `I 10 Migliori Consigli per il ${topic}`,
+            description: `Consigli esperti e best practice per il ${topic}`
         },
         {
-            url: "https://example5.com/advanced",
-            title: `Advanced ${topic} Strategies`,
-            description: `Advanced techniques and strategies for ${topic}`
+            url: "https://strategiadigitale.com/avanzate",
+            title: `Strategie Avanzate di ${topic}`,
+            description: `Tecniche e strategie avanzate per il ${topic}`
+        },
+        {
+            url: "https://formazione.online.it/corso",
+            title: `Corso Professionale di ${topic}`,
+            description: `Corso completo per professionisti del ${topic}`
+        },
+        {
+            url: "https://business.italia.net/case-study",
+            title: `Case Study di Successo nel ${topic}`,
+            description: `Esempi reali di successo nel ${topic}`
         }
     ];
 }
