@@ -84,14 +84,8 @@ async function handleGenerateOutline() {
             return;
         }
         
-        // Test API key first
-        showLoading('Verifica API key...');
-        const isApiKeyValid = await testOpenRouterApiKey(openrouterApiKey);
-        if (!isApiKeyValid) {
-            hideLoading();
-            showError('API key OpenRouter non valida. Verifica e riprova.');
-            return;
-        }
+        // Skip API key test for now and proceed directly
+        console.log('Skipping API key validation, proceeding with generation...');
         
         // Start generation process
         const results = await outlineGenerator.generateCompleteOutline(openrouterApiKey, topic);

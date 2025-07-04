@@ -488,11 +488,12 @@ export async function testOpenRouterApiKey(apiKey) {
         const testMessages = [
             {
                 role: 'user',
-                content: 'Rispondi con "OK" se ricevi questo messaggio.'
+                content: 'Reply with "OK" if you receive this message.'
             }
         ];
         
-        const response = await makeOpenRouterRequest(apiKey, MODELS.OUTLINE_EXTRACTION, testMessages, 10);
+        // Use the most reliable model for testing
+        const response = await makeOpenRouterRequest(apiKey, MODELS.FALLBACK_MODEL, testMessages, 10);
         return response.choices && response.choices[0] && response.choices[0].message;
     } catch (error) {
         console.error('OpenRouter API key test failed:', error.message);
