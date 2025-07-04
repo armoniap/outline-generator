@@ -24,10 +24,17 @@ export function setupEventListeners() {
 
 function setupApiKeyToggles() {
     const toggleOpenrouterBtn = document.getElementById('toggleOpenrouterApiKey');
+    const toggleGeminiBtn = document.getElementById('toggleGeminiApiKey');
     
     if (toggleOpenrouterBtn) {
         toggleOpenrouterBtn.addEventListener('click', () => {
             toggleApiKeyVisibility('openrouterApiKey', 'openrouterEyeIcon');
+        });
+    }
+    
+    if (toggleGeminiBtn) {
+        toggleGeminiBtn.addEventListener('click', () => {
+            toggleApiKeyVisibility('geminiApiKey', 'geminiEyeIcon');
         });
     }
 }
@@ -48,7 +55,8 @@ function toggleApiKeyVisibility(inputId, iconId) {
 
 function setupFormValidation() {
     const inputs = [
-        'openrouterApiKey', 
+        'openrouterApiKey',
+        'geminiApiKey', 
         'topicInput'
     ];
     

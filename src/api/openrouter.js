@@ -562,6 +562,47 @@ IMPORTANTE: Rispondi SOLO con l'outline in formato markdown pulito, senza commen
     }
 }
 
+export async function generateSubheadingSuggestion(apiKey, topic, heading, currentOutline, semanticTerms = []) {
+    const messages = [
+        {
+            role: 'system',
+            content: `Sei un esperto SEO e content strategist specializzato nella creazione di titoli semanticamente ottimizzati. Il tuo compito è migliorare la coerenza semantica dei subheading rispetto all'argomento principale.`
+        },
+        {
+            role: 'user',
+            content: `Migliora questo subheading per massimizzare la coerenza semantica con l'argomento principale "${topic}":
+
+SUBHEADING DA MIGLIORARE:
+Livello: ${heading.level}
+Titolo attuale: "${heading.text}"
+Punteggio attuale: ${Math.round((heading.score || 0) * 100)}%
+
+CONTESTO OUTLINE COMPLETA:
+${currentOutline}
+
+TERMINI SEMANTICI DISPONIBILI:
+${semanticTerms.slice(0, 20).join(', ')}
+
+REQUISITI:
+1. Mantieni il significato originale del subheading
+2. Integra termini semanticamente rilevanti quando possibile
+3. Usa linguaggio naturale e coinvolgente
+4. Assicurati che il nuovo titolo sia più coerente con "${topic}"
+5. Mantieni il livello di profondità appropriato (${heading.level})
+
+Rispondi SOLO con il nuovo subheading migliorato, senza spiegazioni aggiuntive.`
+        }
+    ];
+
+    try {
+        const response = await makeOpenRouterRequest(apiKey, MODELS.SEMANTIC_ANALYSIS, messages, 100);
+        return response.choices[0].message.content.trim();
+    } catch (error) {
+        console.error('Error generating subheading suggestion:', error);
+        throw error;
+    }
+}
+
 export async function testOpenRouterApiKey(apiKey) {
     try {
         const testMessages = [

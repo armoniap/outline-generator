@@ -1,9 +1,15 @@
 export function loadSavedApiKeys() {
     const openrouterApiKey = localStorage.getItem('openrouter_api_key');
+    const geminiApiKey = localStorage.getItem('gemini_api_key');
     
     const openrouterInput = document.getElementById('openrouterApiKey');
     if (openrouterApiKey && openrouterInput) {
         openrouterInput.value = openrouterApiKey;
+    }
+    
+    const geminiInput = document.getElementById('geminiApiKey');
+    if (geminiApiKey && geminiInput) {
+        geminiInput.value = geminiApiKey;
     }
 }
 

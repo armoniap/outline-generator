@@ -79,3 +79,50 @@ export function findMostSimilar(targetVector, candidateVectors) {
         similarity: maxSimilarity
     };
 }
+
+/**
+ * Get semantic score level based on similarity score
+ * @param {number} score - Similarity score (0-1)
+ * @returns {string} Score level
+ */
+export function getScoreLevel(score) {
+    if (score >= 0.8) return 'excellent';
+    if (score >= 0.6) return 'good';
+    if (score >= 0.4) return 'fair';
+    return 'poor';
+}
+
+/**
+ * Get score color class based on level
+ * @param {string} level - Score level
+ * @returns {string} CSS class
+ */
+export function getScoreColorClass(level) {
+    const colors = {
+        'excellent': 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900',
+        'good': 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900',
+        'fair': 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900',
+        'poor': 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900'
+    };
+    
+    return colors[level] || colors.poor;
+}
+
+/**
+ * Format score as percentage
+ * @param {number} score - Raw score (0-1)
+ * @returns {string} Formatted percentage
+ */
+export function formatScore(score) {
+    return `${Math.round(score * 100)}%`;
+}
+
+/**
+ * Calculate average score from array of scores
+ * @param {number[]} scores - Array of similarity scores
+ * @returns {number} Average score
+ */
+export function calculateAverageScore(scores) {
+    if (!scores || scores.length === 0) return 0;
+    return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+}

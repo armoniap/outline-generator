@@ -1,5 +1,6 @@
 import { fadeIn, showLoading, hideLoading, showError, showSuccess } from '../utils/ui.js';
 import { outlineGenerator } from '../services/outlineGenerator.js';
+import { showPhase3 } from './semanticEditor.js';
 
 export function renderResults(results) {
     renderCompetitorOutlines(results.competitorOutlines);
@@ -417,9 +418,37 @@ function displayGeneratedOutline(outline, analytics) {
         // Update analytics
         updateOutlineAnalytics(analytics);
         
+        // Add Phase 3 button if not already present
+        addPhase3Button(generatedOutlineSection, outline);
+        
         // Scroll to generated outline
         generatedOutlineSection.scrollIntoView({ behavior: 'smooth' });
     }
+}
+
+function addPhase3Button(section, outline) {
+    // Check if button already exists
+    let phase3Btn = section.querySelector('#proceedToPhase3Btn');
+    
+    if (!phase3Btn) {
+        // Create Phase 3 button
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'mt-4 text-center';
+        
+        phase3Btn = document.createElement('button');
+        phase3Btn.id = 'proceedToPhase3Btn';
+        phase3Btn.className = 'bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-md transition-colors text-lg';
+        phase3Btn.innerHTML = '🧠 Procedi alla Fase 3: Analisi Semantica';
+        
+        btnContainer.appendChild(phase3Btn);
+        section.appendChild(btnContainer);
+    }
+    
+    // Update event listener
+    phase3Btn.onclick = () => {
+        const topic = document.getElementById('topicInput').value.trim();
+        showPhase3(outline, topic);
+    };
 }
 
 function updateOutlineAnalytics(analytics) {
