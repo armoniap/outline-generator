@@ -366,13 +366,21 @@ function setupPhase2EventListeners() {
     const copyMarkdownBtn = document.getElementById('copyMarkdownBtn');
     
     if (generateOutlineBtn) {
-        generateOutlineBtn.addEventListener('click', async () => {
+        // Remove existing listener to avoid duplicates
+        generateOutlineBtn.replaceWith(generateOutlineBtn.cloneNode(true));
+        const newGenerateBtn = document.getElementById('generateOutlineBtn');
+        
+        newGenerateBtn.addEventListener('click', async () => {
             await handleGenerateOutline();
         });
     }
     
     if (copyMarkdownBtn) {
-        copyMarkdownBtn.addEventListener('click', () => {
+        // Remove existing listener to avoid duplicates  
+        copyMarkdownBtn.replaceWith(copyMarkdownBtn.cloneNode(true));
+        const newCopyBtn = document.getElementById('copyMarkdownBtn');
+        
+        newCopyBtn.addEventListener('click', () => {
             copyOutlineToClipboard();
         });
     }
@@ -391,7 +399,15 @@ async function handleGenerateOutline() {
         
         showLoading('Generando outline finale...');
         
+        console.log('Starting outline generation with:', { topic, includeH3 });
+        
         const result = await outlineGenerator.generateFinalOutline(openrouterApiKey, topic, includeH3);
+        
+        console.log('Generation result:', result);
+        
+        if (!result || !result.outline) {
+            throw new Error('Nessuna outline ricevuta dal servizio');
+        }
         
         // Display the generated outline
         displayGeneratedOutline(result.outline, result.analytics);
@@ -410,45 +426,66 @@ function displayGeneratedOutline(outline, analytics) {
     const generatedOutlineSection = document.getElementById('generatedOutlineSection');
     const generatedOutlineContent = document.getElementById('generatedOutlineContent');
     
-    if (generatedOutlineSection && generatedOutlineContent) {
-        generatedOutlineContent.textContent = outline;
-        generatedOutlineSection.classList.remove('hidden');
-        fadeIn(generatedOutlineSection);
-        
-        // Update analytics
-        updateOutlineAnalytics(analytics);
-        
-        // Add Phase 3 button if not already present
-        addPhase3Button(generatedOutlineSection, outline);
-        
-        // Scroll to generated outline
-        generatedOutlineSection.scrollIntoView({ behavior: 'smooth' });
+    if (!generatedOutlineSection || !generatedOutlineContent) {
+        console.error('Generated outline elements not found');
+        return;
     }
+    
+    console.log('Displaying outline:', outline ? outline.substring(0, 100) : 'EMPTY');
+    
+    if (!outline || outline.trim().length === 0) {
+        showError('Nessuna outline generata. Riprova.');
+        return;
+    }
+    
+    // Clear any existing content first
+    generatedOutlineContent.textContent = '';
+    
+    // Set new content
+    generatedOutlineContent.textContent = outline;
+    
+    // Ensure section is visible
+    generatedOutlineSection.classList.remove('hidden');
+    
+    // Apply fade in effect
+    fadeIn(generatedOutlineSection);
+    
+    // Update analytics
+    updateOutlineAnalytics(analytics);
+    
+    // Add or update Phase 3 button
+    addPhase3Button(generatedOutlineSection, outline);
+    
+    // Scroll to generated outline
+    setTimeout(() => {
+        generatedOutlineSection.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
 }
 
 function addPhase3Button(section, outline) {
-    // Check if button already exists
-    let phase3Btn = section.querySelector('#proceedToPhase3Btn');
-    
-    if (!phase3Btn) {
-        // Create Phase 3 button
-        const btnContainer = document.createElement('div');
-        btnContainer.className = 'mt-4 text-center';
-        
-        phase3Btn = document.createElement('button');
-        phase3Btn.id = 'proceedToPhase3Btn';
-        phase3Btn.className = 'bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-md transition-colors text-lg';
-        phase3Btn.innerHTML = '🧠 Procedi alla Fase 3: Analisi Semantica';
-        
-        btnContainer.appendChild(phase3Btn);
-        section.appendChild(btnContainer);
+    // Remove existing button and container if present
+    const existingContainer = section.querySelector('.phase3-btn-container');
+    if (existingContainer) {
+        existingContainer.remove();
     }
     
-    // Update event listener
+    // Create new Phase 3 button container
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'mt-4 text-center phase3-btn-container';
+    
+    const phase3Btn = document.createElement('button');
+    phase3Btn.id = 'proceedToPhase3Btn';
+    phase3Btn.className = 'bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-md transition-colors text-lg';
+    phase3Btn.innerHTML = '🧠 Procedi alla Fase 3: Analisi Semantica';
+    
+    // Add event listener
     phase3Btn.onclick = () => {
         const topic = document.getElementById('topicInput').value.trim();
         showPhase3(outline, topic);
     };
+    
+    btnContainer.appendChild(phase3Btn);
+    section.appendChild(btnContainer);
 }
 
 function updateOutlineAnalytics(analytics) {
